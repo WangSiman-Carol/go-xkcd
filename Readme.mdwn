@@ -1,0 +1,83 @@
+# A 10-minute-to-build GO CLI Application
+
+### By doing this practice, you will learn
+
+- Go code organization (packages, module)
+- Accepting command line arguments
+- Interconversion between JSON and Go Structs
+- Making HTTP API calls
+- Creating files in the disk(downloading and saving from Internet)
+- String Manipulation
+
+The structure of this program is 
+```
+go-xkcd 
+├── client 
+│   └── xkcd.Go 
+└── model 
+    └── comic.Go 
+├── main.Go 
+└── Go.mod 
+
+```
+
+---
+
+### Go code organization
+
+Click on [this](https://golang.org/doc/code.html#Organization) to learn more.
+
+This app contains one module with three packages: model, client and main
+
+To initialize a module outside the workspace (GOROOT, GOPATH), use this command
+```bash
+go mod init example.com/module_name
+```
+
+Now, let's see how we set up those packages.
+
+In main.go, the first line declares the package $main$. **go run cammand cannot run non-main pacakge.**
+```go
+package main
+```
+
+In comic.go, the first line declares the package $client$
+```go
+package client
+```
+
+In xkcd.go, the first line declares the package $model$
+```go
+package model
+```
+
+When you use the functions, types, variables, and constants defined in other packages, just import outer packages as usual. See this example
+```go
+// Import package model in the source file xkcd.go, which is in the package client
+import (
+    example.com\module_name\model
+)
+```
+---
+
+### Accepting command line arguments
+Package flag, a built-in go package, implements command-line flag parsing.
+
+You can easily define flags of multiple types (e.g. Int, Bool, String).
+
+In terms of the cammand line syntax, The following forms are permitted:
+```bash
+flag
+-flag=x
+-flag x  // non-boolean flags only
+```
+
+For example, if you want to fetch the No.223 comic, you use the -n flag and give the number 223 as the argument
+```go
+go run main.go -n 223
+```
+To learn more about the flag package, take a look at [this](https://golang.org/pkg/flag/)
+
+---
+
+### Interconversion between JSON and Go Structs
