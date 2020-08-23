@@ -81,3 +81,9 @@ To learn more about the flag package, take a look at [this](https://golang.org/p
 ---
 
 ### Interconversion between JSON and Go Structs
+
+First, let's take a look at the JSON returned by XKCD APIs:
+
+[https://xkcd.com/info.0.json](https://xkcd.com/info.0.json)
+
+[https://xkcd.com/614/info.0.json](https://xkcd.com/614/info.0.json)
