@@ -7,7 +7,6 @@
 - Interconversion between JSON and Go Structs
 - Making HTTP API calls
 - Creating files in the disk(downloading and saving from Internet)
-- String Manipulation
 
 The structure of this program is 
 ```
@@ -33,20 +32,21 @@ To initialize a module outside the workspace (GOROOT, GOPATH), use this command
 ```bash
 go mod init example.com/module_name
 ```
+This generates a ```go.mod``` file in the current directory, which is the root for ```module_name```
 
-Now, let's see how we set up those packages.
+Now, let's see how we set up those three packages.
 
-In main.go, the first line declares the package $main$. **go run cammand cannot run non-main pacakge.**
+In ``main.go``, the first line declares the package $main$. **go run cammand cannot run non-main pacakge.**
 ```go
 package main
 ```
 
-In comic.go, the first line declares the package $client$
+In ``comic.go``, the first line declares the package $client$
 ```go
 package client
 ```
 
-In xkcd.go, the first line declares the package $model$
+In ``xkcd.go``, the first line declares the package $model$
 ```go
 package model
 ```
@@ -61,7 +61,7 @@ import (
 ---
 
 ### Accepting command line arguments
-Package flag, a built-in go package, implements command-line flag parsing.
+Package `flag`, a built-in go package, implements command-line flag parsing.
 
 You can easily define flags of multiple types (e.g. Int, Bool, String).
 
@@ -82,8 +82,67 @@ To learn more about the flag package, take a look at [this](https://golang.org/p
 
 ### Interconversion between JSON and Go Structs
 
-First, let's take a look at the JSON returned by XKCD APIs:
+With the built-in package, `encoding/json`, it's a snap to read and write JSON data from your Go programs.
+
+- JSON data in Go is actually a slice of byte `[]byte `.   For example,
+```
+b = []byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)
+```
+
+- We can use `Marshal` and `Unmarshal` methods to encode and decode JSON data
+- The json package provides `Decoder` and `Encoder` types to support the common operation of reading and writing streams of JSON data.
+```go
+func NewDecoder(r io.Reader) *Decoder
+func NewEncoder(w io.Writer) *Encoder
+```
+Due to the ubiquity of Readers and Writers, these Encoder and Decoder types can be used in a broad range of scenarios, such as reading and writing to HTTP connections, WebSockets, or files.
+
+**In this program, we use `Decoder` to read JSON data returned by XKCD APIs.**
+
+Now, let's take a look at JSON returned by XKCD APIs:
 
 [https://xkcd.com/info.0.json](https://xkcd.com/info.0.json)
 
 [https://xkcd.com/614/info.0.json](https://xkcd.com/614/info.0.json)
+
+
+
+```go
+type ComicResponse struct {
+	Month      string `json:"month"`
+	Num        int    `json:"num"`
+	Link       string `json:"link"`
+	Year       string `json:"year"`
+	News       string `json:"news"`
+	SafeTitle  string `json:"safe_title"`
+	Transcript string `json:"transcript"`
+	Alt        string `json:"alt"`
+	Img        string `json:"img"`
+	Title      string `json:"title"`
+	Day        string `json:"day"`
+}
+```
+```go
+/* 
+* resp is the response from GET HTTP call 
+* The response body is streamed on demand as the Body field is read.
+*/
+var comicResp model.ComicResponse
+if err := json.NewDecoder(resp.Body).Decode(&comicResp); err != nil {
+    return model.Comic{}, err
+}
+```
+
+Read this [blog](https://blog.golang.org/json) to learn more about JSON and GO
+
+---
+### Making HTTP API calls
+We use built-in package `net/http`
+
+---
+
+### Creating files in the disk
+We use built-in package `filepath`
+
+---
+
